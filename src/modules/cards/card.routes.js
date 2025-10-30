@@ -12,4 +12,7 @@ router.get('/', controllers.getAllCards);
 // Update Card by ID
 router.put('/:id', controllers.updateCardById);
 
+// AddToCart
+router.post('/add-to-cart', controllers.addToCart);
+
 module.exports = router;

@@ -1,0 +1,27 @@
+const order = require ('./order.module');
+
+const createOrder = async ({userId, products, totalPrice, address, shipping}) => {
+    if (!userId || !products || !totalPrice || !address || !shipping) {
+        throw new Error("All order details are required");
+    }
+    const orderData = {
+        user: userId,
+        products,
+        totalPrice,
+        address,
+        shipping
+    };
+    const newOrder = await order.create(orderData);
+    await newOrder.save();
+    for (const item of products) {
+        if (!item.quantity || item.quantity <= 0 || item.quantity > item.product.quantity) {
+            await order.findByIdAndDelete(newOrder._id);
+            throw new Error("Invalid product quantity or out of stock");
+        }
+    }
+    return newOrder;
+}
+
+module.exports = {
+    createOrder
+};
