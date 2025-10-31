@@ -22,6 +22,17 @@ const createOrder = async ({userId, products, totalPrice, address, shipping}) =>
     return newOrder;
 }
 
+// Orders Admin services
+
+async function getAllOrders() {
+	const orders = await Order.find();
+	if (orders) {
+		return orders;
+	}
+	throw new Error('No orders found');
+}
+
 module.exports = {
-    createOrder
+    createOrder,
+    getAllOrders
 };

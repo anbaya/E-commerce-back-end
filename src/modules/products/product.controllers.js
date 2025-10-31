@@ -1,9 +1,10 @@
 const Product = require('./product.module');
+const productServices = require('./product.services');
 
 // Add Product
 const addProduct = async (req, res) => {
 	try {
-		const product = await Product.create(req.body);
+		const product = await productServices.createProduct(req.body);
 		res.status(201).json(product);
 	}catch (error) {
 		console.error(error);
@@ -17,7 +18,7 @@ const addProduct = async (req, res) => {
 // Get All Products
 const getAllProducts = async (req , res) => {
 	try {
-		const products = await Product.find();
+		const products = await productServices.getAllProducts();
 		res.status(200).json(products);
 	}catch (error) {
 		res.status(500).json({message: error.message});
@@ -28,7 +29,7 @@ const getAllProducts = async (req , res) => {
 const getProductById = async (req , res) => {
 	try {
 		const {id} = req.params;
-		const product = await Product.findById(id);
+		const product = await productServices.getProductById(id);
 		if (!product) {
 			return res.status(404).json({message: "Product not found"});
 		}
@@ -38,16 +39,25 @@ const getProductById = async (req , res) => {
 	}
 };
 
+// Search Products by Name
+const searchProductsByName = async (req, res) => {
+	try {
+		const products = await productServices.searchByName(req.body);
+		res.status(200).json(products);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
 // Update Product by ID
 const updateProductById = async (req , res) => {
 	try {
 		const {id} = req.params;
-		const product = await Product.findByIdAndUpdate(id, req.body);
+		const product = await productServices.updateProduct(id, req.body);
 		if (!product) {
 			return res.status(404).json({message: "Product not found"});
 		}
-		const updatedProduct = await Product.findById(id);
-		res.status(200).json(updatedProduct);
+		res.status(200).json(product);
 	}
 	catch (error) {
 		res.status(500).json({message: error.message});
@@ -58,7 +68,7 @@ const updateProductById = async (req , res) => {
 const deleteProductById = async (req, res) => {
 	try {
 		const {id} = req.params;
-		const product = await Product.findByIdAndDelete(id);
+		const product = await productServices.deleteProduct(id);
 		if (!product) {
 			return res.status(404).json({message: "Product not found"});
 		}
@@ -73,6 +83,7 @@ module.exports = {
 	addProduct,
 	getAllProducts,
 	getProductById,
+	searchProductsByName,
 	updateProductById,
 	deleteProductById
 };

@@ -13,6 +13,9 @@ router.get('/products', controllers.getAllProducts);
 // Get Product by ID
 router.get('/products/:id', controllers.getProductById);
 
+// Search Products by Name
+router.post('/products/search', controllers.searchProductsByName);
+
 // Update Product by ID
 router.put('/products/:id', controllers.updateProductById);
 
