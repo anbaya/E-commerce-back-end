@@ -2,6 +2,7 @@ const User = require('./user.module');
 const Card = require('../cards/card.module');
 const {register, login} = require('../../sevices/auth.services');
 const {updateUser} = require('./user.services');
+const mailer = require('../../utils/mailer');
 
 // Add User
 const addUser = async (req, res) => {
@@ -11,6 +12,12 @@ const addUser = async (req, res) => {
 			return res.status(400).json({ message: "Invalid user data" });
 		}
 		res.status(201).json(user);
+		// Send welcome email
+		await mailer.sendEmail({
+			to: user.email,
+			subject: 'Welcome to My Store',
+			text: 'Your account has been successfully created.'
+		});
 	} catch (error) {
 		console.error("Registration error:", error);
 		// Handle specific known errors
@@ -37,6 +44,13 @@ const userLogin = async (req, res) => {
 		if (!section)
 			return res.status(400).json({ message: "login error" });
 		res.status(200).json(section);
+		// Send login email
+		const user = await User.findById(section.userId);
+		await mailer.sendEmail({
+			to: user.email,
+			subject: 'Login Notification',
+			text: 'You have successfully logged in to your account.'
+		});
 	} catch (error) {
 		console.error("Login error:", error);
 		// Input validation errors
@@ -71,6 +85,12 @@ const updatedUserById = async (req, res) => {
 			return res.status(404).json({ message: "User not found" });
 		}
 		res.status(200).json(user);
+		// Send update email
+		await mailer.sendEmail({
+			to: user.email,
+			subject: 'Account Update Notification',
+			text: 'Your account information has been updated successfully.'
+		});
 	} catch (error) {
 		console.error("Update user error:", error);
 		// Input validation errors

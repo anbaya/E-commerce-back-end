@@ -17,17 +17,12 @@ async function getDashboardStats() {
 }
 
 async function getTotalOfSales() {
-	const getTotalOfSales = await Order.aggregate([
-		{$match: {status: 'paid'}},
-		{$group: {}}
+	const totalSales = await Order.aggregate([
+		{$match: {status: 'pending'}},
+		{$group: {_id: null, totalSales: {$sum: '$totalPrice'}}}
 	]);
+	return totalSales[0].totalSales;
 }
-
-
-
-
-
-
 
 module.exports = {
 	getDashboardStats,

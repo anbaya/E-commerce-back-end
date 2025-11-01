@@ -1,5 +1,5 @@
 const { models } = require('mongoose');
-const Product = require('./product.model');
+const Product = require('./product.module');
 
 // Get All Products
 async function getAllProducts() {

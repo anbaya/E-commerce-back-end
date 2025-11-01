@@ -1,4 +1,4 @@
-const order = require ('./order.module');
+const Order = require ('./order.module');
 
 const createOrder = async ({userId, products, totalPrice, address, shipping}) => {
     if (!userId || !products || !totalPrice || !address || !shipping) {
@@ -11,11 +11,11 @@ const createOrder = async ({userId, products, totalPrice, address, shipping}) =>
         address,
         shipping
     };
-    const newOrder = await order.create(orderData);
+    const newOrder = await Order.create(orderData);
     await newOrder.save();
     for (const item of products) {
         if (!item.quantity || item.quantity <= 0 || item.quantity > item.product.quantity) {
-            await order.findByIdAndDelete(newOrder._id);
+            await Order.findByIdAndDelete(newOrder._id);
             throw new Error("Invalid product quantity or out of stock");
         }
     }
